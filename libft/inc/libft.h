@@ -14,7 +14,7 @@
 # define LIBFT_H
 
 # include <stddef.h>
-# include "ft_printf/ft_printf.h"
+# include <stdbool.h>
 
 typedef struct s_list
 {
@@ -22,27 +22,21 @@ typedef struct s_list
 	struct s_list	*next;
 }	t_list;
 
-typedef enum e_bool
-{
-	FALSE,
-	TRUE
-}					t_bool;
-
 // 1. Character Classification and Transformation Functions
 int		ft_isalpha(int c);
-t_bool	ft_isdigit(int c);
+bool	ft_isdigit(int c);
 int		ft_isalnum(int c);
 int		ft_isascii(int c);
 int		ft_isprint(int c);
 int		ft_toupper(int c);
 int		ft_tolower(int c);
-t_bool	ft_isspace(int c);
-t_bool	ft_is_plus_or_minus(int c);
+bool	ft_isspace(int c);
+bool	ft_is_plus_or_minus(int c);
 
 // 2. String Manipulation Functions
 size_t	ft_strlen(const char *str);
 size_t	ft_strlen_improve(const char *str, char c);
-size_t	ft_strlen_choose_way_and_c(char *str, char c, t_bool start_or_end);
+size_t	ft_strlen_choose_way_and_c(char *str, char c, bool start_or_end);
 size_t	ft_strlcat(char *dst, const char *src, size_t size);
 size_t	ft_strlcpy(char *dst, const char *src, size_t size);
 char	*ft_strchr(const char *s, int c);
@@ -90,8 +84,8 @@ t_list	*ft_lstmap(t_list *lst, void *(*f)(void *), void (*del)(void *));
 // Utils
 int		compute_size(int n);
 int		compute_size_long(long n);
-t_bool	ft_isspace(int c);
-t_bool	ft_is_plus_or_minus(int c);
+bool	ft_isspace(int c);
+bool	ft_is_plus_or_minus(int c);
 size_t	count_words(char const *s, char c);
 
 #endif

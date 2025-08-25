@@ -12,6 +12,8 @@
 
 #include "pipex.h"
 
+#include "libft.h"
+
 char	*str_two_join(char *str, char *str_2, char *str_3)
 {
 	char	*temp_str;

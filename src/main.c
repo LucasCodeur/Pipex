@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "pipex.h"
+#include "libft.h"
 
 static void	error_message(char *str)
 {
@@ -21,12 +22,8 @@ static void	error_message(char *str)
 
 static void	initialize_values(t_data *data)
 {
-	data->all_paths = NULL;
-	data->commands = NULL;
-	data->path = NULL;
-	data->path_bin = NULL;
-	data->pathname = NULL;
-	data->path_is_empty = FALSE;
+	ft_bzero(data, sizeof(t_data));
+	data->path_is_empty = false;
 	data->fd.outfile = -1;
 	data->fd.infile = -1;
 	data->fd.first_pipe[0] = -1;
@@ -43,7 +40,7 @@ static void	fds_pipes(t_data *data, char *argv[], int argc, char *envp[])
 	{
 		error_message(argv[2]);
 		close(data->fd.outfile);
-		exit(EXIT_SUCCESS);
+		exit(EXIT_FAILURE);
 	}
 	if (pipe(data->fd.first_pipe) == -1)
 	{
@@ -61,20 +58,22 @@ static void	handle_return_of_status(t_data data, int argc)
 {
 	if (waitpid(data.pid_1, &data.status, 0) == -1)
 		exit(EXIT_FAILURE);
-	if (data.status == 127)
+	else if (data.status == 127)
 		exit(127);
-	if (data.status == -1)
+	else if (data.status == -1)
 		exit(EXIT_FAILURE);
-	if (argc > 4 && waitpid(data.pid_2, &data.status, 0) == -1)
+	else if (argc > 4 && waitpid(data.pid_2, &data.status, 0) == -1)
 		exit(EXIT_FAILURE);
-	if (argc > 4 && data.status == -1)
+	else if (argc > 4 && data.status == -1)
 		exit(EXIT_FAILURE);
-	if (argc > 4 && data.status == 127)
+	else if (argc > 4 && data.status == 127)
 		exit(127);
-	if (WIFEXITED(data.status))
+	else if (WIFEXITED(data.status))
 		exit(WEXITSTATUS(data.status));
 	else if (WIFSIGNALED(data.status))
 		exit(128 + WTERMSIG(data.status));
+	else
+		return ;
 }
 
 int	main(int argc, char **argv, char **envp)
@@ -82,7 +81,7 @@ int	main(int argc, char **argv, char **envp)
 	t_data	data;
 
 	if (argc < 2 || argc > 5)
-		return (0);
+		return (1);
 	initialize_values(&data);
 	fds_pipes(&data, argv, argc, envp);
 	if (argc > 4)

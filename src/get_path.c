@@ -10,27 +10,10 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft/libft.h"
+#include "libft.h"
 #include "pipex.h"
 
-static char	*get_path(t_data *data, char *envp[])
-{
-	int	i;
-
-	i = 0;
-	while (envp && envp[i] != NULL)
-	{
-		if (ft_strncmp(envp[i], "PATH=", 5) == 0)
-		{
-			if (ft_strlen(envp[i]) > 5)
-				return (envp[i]);
-			else
-				data->path_is_empty = TRUE;
-		}
-		i++;
-	}
-	return (NULL);
-}
+static char	*get_path(t_data *data, char *envp[]);
 
 char	**get_path_bins(t_data *data, char *envp[])
 {
@@ -44,4 +27,23 @@ char	**get_path_bins(t_data *data, char *envp[])
 	if (!all_paths_bins)
 		return (NULL);
 	return (all_paths_bins);
+}
+
+static char	*get_path(t_data *data, char *envp[])
+{
+	int	i;
+
+	i = 0;
+	while (envp && envp[i] != NULL)
+	{
+		if (ft_strncmp(envp[i], "PATH=", 5) == 0)
+		{
+			if (ft_strlen(envp[i]) > 5)
+				return (envp[i]);
+			else
+				data->path_is_empty = true;
+		}
+		i++;
+	}
+	return (NULL);
 }

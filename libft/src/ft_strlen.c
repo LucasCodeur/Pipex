@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "libft.h"
+
 #include <stddef.h>
 
 size_t	ft_strlen(const char *str)
@@ -37,7 +38,7 @@ size_t	ft_strlen_improve(const char *str, char c)
 	return (i);
 }
 
-size_t	ft_strlen_choose_way_and_c(char *str, char c, t_bool start_or_end)
+size_t	ft_strlen_choose_way_and_c(char *str, char c, bool start_or_end)
 {
 	size_t	i;
 	size_t	j;
@@ -48,14 +49,14 @@ size_t	ft_strlen_choose_way_and_c(char *str, char c, t_bool start_or_end)
 	k = 0;
 	if (!str)
 		return (0);
-	if (start_or_end == TRUE)
+	if (start_or_end == true)
 	{
 		while (str[k] != c && str[k])
 			k++;
 		return (k);
 	}
 	i = ft_strlen(str);
-	if (start_or_end == FALSE)
+	if (start_or_end == false)
 	{
 		j = i - 1;
 		i--;

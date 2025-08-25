@@ -13,10 +13,10 @@
 #ifndef PIPEX_H
 # define PIPEX_H
 
-# include "../src/libft/libft.h"
 # include <errno.h>
 # include <fcntl.h>
 # include <stddef.h>
+# include <stdbool.h>
 # include <stdlib.h>
 # include <sys/wait.h>
 # include <unistd.h>
@@ -43,7 +43,7 @@ typedef struct s_data
 	char	**commands;
 	char	**all_paths;
 	char	buf[4096];
-	t_bool	path_is_empty;
+	bool	path_is_empty;
 }			t_data;
 
 char		**get_path_bins(t_data *data, char *envp[]);

@@ -11,8 +11,41 @@
 /* ************************************************************************** */
 
 #include "pipex.h"
+#include "libft.h"
 
-char	*get_command_with_path(t_data *data, char *command)
+#include <stdbool.h>
+
+static void	check_if_absolute_path(t_data *data, char *pathname);
+static void	handle_absolute_path(t_data *data, char *pathname, char *command, char *envp[]);
+static char	*get_command_with_path(t_data *data, char *command);
+
+void	exec_command(t_data *data, char *envp[], char *command)
+{
+	data->pathname = command;
+	check_if_absolute_path(data, data->pathname);
+	if (access(data->pathname, X_OK) == -1)
+	{
+		data->pathname = get_command_with_path(data, command);
+		printf("PATHNAME : %s\n", data->pathname);
+		if (!data->pathname)
+		{
+			free_and_close_all(data);
+			ft_putstr_fd(command, 2);
+			ft_putstr_fd(": command not found\n", 2);
+			exit(127);
+		}
+		if (execve(data->pathname, data->commands, envp) == -1)
+		{
+			free_and_close_all(data);
+			exit(EXIT_FAILURE);
+		}
+		free_and_close_all(data);
+	}
+	else
+		handle_absolute_path(data, data->pathname, command, envp);
+}
+
+static char	*get_command_with_path(t_data *data, char *command)
 {
 	data->i = 0;
 	while (data->all_paths[data->i])
@@ -44,9 +77,9 @@ static void	check_if_absolute_path(t_data *data, char *pathname)
 	char	*is_path;
 
 	is_path = ft_strchr(pathname, '/');
-	if (is_path != NULL || data->path_is_empty == TRUE)
+	if (is_path != NULL || data->path_is_empty == true)
 	{
-		if (access(pathname, X_OK) == -1 || data->path_is_empty == TRUE)
+		if (access(pathname, X_OK) == -1 || data->path_is_empty == true)
 		{
 			close(data->fd.outfile);
 			ft_putstr_fd(pathname, 2);
@@ -79,29 +112,4 @@ static void	handle_absolute_path(t_data *data, char *pathname, char *command,
 		exit(EXIT_FAILURE);
 	}
 	free_double_array(final_command);
-}
-
-void	exec_command(t_data *data, char *envp[], char *command)
-{
-	data->pathname = command;
-	check_if_absolute_path(data, data->pathname);
-	if (access(data->pathname, X_OK) == -1)
-	{
-		data->pathname = get_command_with_path(data, command);
-		if (!data->pathname)
-		{
-			free_and_close_all(data);
-			ft_putstr_fd(command, 2);
-			ft_putstr_fd(": command not found\n", 2);
-			exit(127);
-		}
-		if (execve(data->pathname, data->commands, envp) == -1)
-		{
-			free_and_close_all(data);
-			exit(EXIT_FAILURE);
-		}
-		free_and_close_all(data);
-	}
-	else
-		handle_absolute_path(data, data->pathname, command, envp);
 }

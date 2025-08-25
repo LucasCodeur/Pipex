@@ -5,21 +5,21 @@
 #                                                     +:+ +:+         +:+      #
 #    By: lud-adam <lud-adam@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
-#    Created: 2025/06/14 14:47:47 by lud-adam          #+#    #+#              #
-#    Updated: 2025/08/24 17:11:38 by lud-adam         ###   ########.fr        #
+#    Created: 2025/08/25 15:55:38 by lud-adam          #+#    #+#              #
+#    Updated: 2025/08/25 15:55:38 by lud-adam         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 .PHONY : all clean fclean re bonus clean-lib clean-bin clean-obj debug debug-cc debug-print
 CC = cc
-CFLAGS = -Wextra -Wall -Werror -pthread
+CFLAGS = -Wextra -Wall -Werror
 DEPENDANCIES = -MMD -MP
 NO_DIR = --no-print-directory
 MAKE := $(MAKE) -j $(NO_DIR)
-NAME = pipex
+NAME = libft.a
 
 # Debugging flags
-CFLAGS_DEBUG = -Wall -Wextra -pthread -g3 -D DEBUG=1
+CFLAGS_DEBUG = -Wall -Wextra -g3 -D DEBUG=1
 CC_DEBUG = clang
 CC_DEBUG_CFLAGS = -g3 -D DEBUG=1 -Weverything -Wno-padded -pedantic -O2 -Wwrite-strings -Wconversion -Wno-suggest-override -Wno-suggest-destructor-override -Wno-incompatible-pointer-types-discards-qualifiers -Wno-disabled-macro-expansion
 #############################################################################################
@@ -29,20 +29,10 @@ CC_DEBUG_CFLAGS = -g3 -D DEBUG=1 -Weverything -Wno-padded -pedantic -O2 -Wwrite-
 #############################################################################################
 # Source directories
 P_SRC = src/
-P_DEBUG = $(P_SRC)debug/
-P_PARSING = $(P_SRC)parsing/
-P_TESTS = tests/
-
 P_OBJ = .obj/
-
 P_INC = inc/
-P_INCS = \
-	$(P_INC) \
 
 # Libraries directories
-P_LIBFT = libft/
-P_LIB = lib/
-P_FT_PRINTF = ft_printf_fd/
 #############################################################################################
 #                                                                                           #
 #                                           FILES                                           #
@@ -50,23 +40,18 @@ P_FT_PRINTF = ft_printf_fd/
 #############################################################################################
 # Headers
 INC = \
-	pipex.h \
+	  libft.h
 
 # Source files
 SRC = \
-		main.c \
-		execution.c \
-		free.c \
-		functions_utils.c \
-		get_path.c \
-		process.c \
+	ft_atoi.c     ft_isascii.c  ft_memcmp.c      ft_putendl_fd.c ft_strdup.c    ft_strlen.c   ft_strtrim.c	\
+	ft_bzero.c    ft_isdigit.c  ft_memcpy.c      ft_putnbr_fd.c  ft_striteri.c  ft_strmapi.c  ft_substr.c	\
+	ft_calloc.c   ft_isprint.c  ft_memmove.c     ft_putstr_fd.c  ft_strjoin.c   ft_strncmp.c  ft_tolower.c \
+	ft_isalnum.c  ft_itoa.c     ft_memset.c      ft_split.c      ft_strlcat.c   ft_strnstr.c  ft_toupper.c \
+	ft_isalpha.c  ft_memchr.c   ft_putchar_fd.c  ft_strchr.c     ft_strlcpy.c   ft_strrchr.c  compute_size_long.c \
+	ft_lstnew_bonus.c	ft_lstadd_front_bonus.c	ft_lstsize_bonus.c ft_lstlast_bonus.c	ft_lstadd_back_bonus.c \
+	ft_lstdelone_bonus.c ft_lstclear_bonus.c	ft_lstiter_bonus.c	ft_lstmap_bonus.c
 
-LIBS = \
-	-L$(P_FT_PRINTF) -lprintf \
-	-L$(P_LIBFT) -lft \
-
-LIBFT = $(P_LIBFT)libft.a
-FT_PRINTF = $(P_FT_PRINTF)libprintf.a 
 #############################################################################################
 #                                                                                           #
 #                                        MANIPULATION                                       #
@@ -74,7 +59,6 @@ FT_PRINTF = $(P_FT_PRINTF)libprintf.a
 #############################################################################################
 SRCS =	\
 	$(addprefix $(P_SRC), $(SRC)) \
-	$(addprefix $(P_DEBUG), $(DEBUG))
 
 # List of object files (redirect to P_OBJ)
 OBJS = $(subst $(P_SRC), $(P_OBJ), $(SRCS:.c=.o))
@@ -85,7 +69,6 @@ DEPS = $(OBJS:%.o=%.d) $(OBJS_TEST:%.o=%.d)
 
 # List of header files
 INCS = $(addprefix $(P_INC), $(INC)) \
-		$(P_FT_PRINTF)ft_printf.h \
 		
 #############################################################################################
 #                                                                                           #
@@ -95,36 +78,26 @@ INCS = $(addprefix $(P_INC), $(INC)) \
 all:
 	@$(MAKE) $(NAME)
 
-# Create $(NAME) executable
-$(NAME): $(OBJS) $(INCS) $(FT_PRINTF) $(LIBFT)
-	@if $(CC) $(CFLAGS) $(DEPENDANCIES) $(DEBUG_STATE) -I $(P_INC) -I $(P_LIBFT)inc -I $(P_FT_PRINTF) -o $(NAME) $(OBJS) $(LIBS); then \
-		echo "$(Green)Creating executable $@$(Color_Off)"; \
+# Create $(NAME) library instead of executable
+$(NAME): $(OBJS) $(INCS)
+	@if ar rcs $(NAME) $(OBJS); then \
+		echo "$(Green)Creating library $@$(Color_Off)"; \
 	else \
 		echo "$(Red)Error creating $@$(Color_Off)"; \
 	fi
+	@ranlib $(NAME)  # Optional: index the library for faster linking
 
-# Custom rule to compilate all .c with there path
+# Custom rule to compile all .c files
 $(P_OBJ)%.o: $(P_SRC)%.c $(INCS)
 	@mkdir -p $(dir $@)
-	@if $(CC) $(CFLAGS) $(DEPENDANCIES) $(DEBUG_STATE) -I $(P_INC) -I $(P_LIBFT)inc -I $(P_FT_PRINTF) -c $< -o $@; then \
+	@if $(CC) $(CFLAGS) $(DEPENDANCIES) $(DEBUG_STATE) -I $(P_INC) -c $< -o $@; then \
 		echo "$(Cyan)Compiling $<$(Color_Off)"; \
 	else \
 		echo "$(Red)Error creating $@$(Color_Off)"; \
 	fi
 
-force:
-
-$(FT_PRINTF): force
-	@$(MAKE) -C $(P_FT_PRINTF)
-
 $(LIBFT): force
 	@$(MAKE) -C $(P_LIBFT)
-
-$(P_LIB)libpipex.a: $(OBJS) $(INCS) $(FT_PRINTF) $(LIBFT)
-
-	@mkdir -p $(dir $@)
-	@echo "$(Green)Creating library $@$(Color_Off)"
-	@ar -rcs $@ $(OBJS)
 
 ############################################################################################
 #                                                                                           #
@@ -132,20 +105,13 @@ $(P_LIB)libpipex.a: $(OBJS) $(INCS) $(FT_PRINTF) $(LIBFT)
 #                                                                                           #
 #############################################################################################
 # Rules for clean up
-#
 clean:
 	rm -rfd $(P_OBJ)
 	rm -rfd $(OBJS)
 	rm -rfd $(DEPS)
 
 clean-lib:
-	rm -rfd $(P_LIB)
-	@$(MAKE) -C $(P_LIBFT) fclean
-	@$(MAKE) -C $(P_GET_NEXT_LINE) fclean
-
-clean-bin:
-	rm -f $(NAME)
-	rm -f $(NAME_TEST)
+	rm -rfd libft.a
 
 clean-obj:
 	@$(MAKE) clean
@@ -234,4 +200,4 @@ On_Purple=\033[45m
 On_Cyan=\033[46m
 On_White=\033[47m
 
--include $(DEPS)% 
+-include $(DEPS)%

@@ -10,21 +10,23 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+#include <stdbool.h>
+
 #include "libft.h"
 
-t_bool	ft_isspace(int c)
+bool	ft_isspace(int c)
 {
 	if (c == ' ' || c == '\t' || c == '\n' || c == '\v' || c == '\f'
 		|| c == '\r')
-		return (TRUE);
-	return (FALSE);
+		return (true);
+	return (false);
 }
 
-t_bool	ft_is_plus_or_minus(int c)
+bool	ft_is_plus_or_minus(int c)
 {
 	if (c == '-' || c == '+')
-		return (TRUE);
-	return (FALSE);
+		return (true);
+	return (false);
 }
 
 int	ft_atoi(const char *nptr)
@@ -35,9 +37,9 @@ int	ft_atoi(const char *nptr)
 
 	result = 0;
 	sign = 1;
-	while (ft_isspace(*nptr) == TRUE)
+	while (ft_isspace(*nptr) == true)
 		nptr++;
-	if (ft_is_plus_or_minus(*nptr) == TRUE)
+	if (ft_is_plus_or_minus(*nptr) == true)
 	{
 		if (*nptr == '-')
 			sign = -1;
