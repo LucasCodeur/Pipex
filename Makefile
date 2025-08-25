@@ -85,6 +85,7 @@ DEPS = $(OBJS:%.o=%.d) $(OBJS_TEST:%.o=%.d)
 
 # List of header files
 INCS = $(addprefix $(P_INC), $(INC)) \
+		$(P_LIBFT)inc/libft.h \
 		$(P_FT_PRINTF)ft_printf.h \
 		
 #############################################################################################
@@ -114,11 +115,12 @@ $(P_OBJ)%.o: $(P_SRC)%.c $(INCS)
 
 force:
 
-$(FT_PRINTF): force
-	@$(MAKE) -C $(P_FT_PRINTF)
 
 $(LIBFT): force
 	@$(MAKE) -C $(P_LIBFT)
+
+$(FT_PRINTF): force
+	@$(MAKE) -C $(P_FT_PRINTF)
 
 $(P_LIB)libpipex.a: $(OBJS) $(INCS) $(FT_PRINTF) $(LIBFT)
 
@@ -141,6 +143,7 @@ clean:
 clean-lib:
 	rm -rfd $(P_LIB)
 	@$(MAKE) -C $(P_LIBFT) fclean
+	@$(MAKE) -C $(P_FT_PRINTF) fclean
 
 clean-bin:
 	rm -f $(NAME)
