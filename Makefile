@@ -141,11 +141,9 @@ clean:
 clean-lib:
 	rm -rfd $(P_LIB)
 	@$(MAKE) -C $(P_LIBFT) fclean
-	@$(MAKE) -C $(P_GET_NEXT_LINE) fclean
 
 clean-bin:
 	rm -f $(NAME)
-	rm -f $(NAME_TEST)
 
 clean-obj:
 	@$(MAKE) clean
