@@ -6,23 +6,13 @@
 /*   By: eveil <eveil@student.42lyon.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/14 18:02:16 by lud-adam          #+#    #+#             */
-/*   Updated: 2025/03/17 16:53:16 by lud-adam         ###   ########.fr       */
+/*   Updated: 2025/08/26 16:03:59 by lud-adam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
 
-static void	close_fds(t_data *data)
-{
-	if (data->fd.first_pipe[0] != -1)
-		close(data->fd.first_pipe[0]);
-	if (data->fd.first_pipe[1] != -1)
-		close(data->fd.first_pipe[1]);
-	if (data->fd.infile != -1)
-		close(data->fd.infile);
-	if (data->fd.outfile != -1)
-		close(data->fd.outfile);
-}
+static void	close_fds(t_data *data);
 
 void	free_and_close_all(t_data *data)
 {
@@ -39,4 +29,33 @@ void	free_and_close_all(t_data *data)
 		data->path = NULL;
 	}
 	close_fds(data);
+}
+
+char	**free_double_array(char **strs)
+{
+	size_t	i;
+
+	i = 0;
+	if (!strs)
+		return (NULL);
+	while (strs[i])
+	{
+		if (strs[i])
+			free(strs[i]);
+		i++;
+	}
+	free(strs);
+	return (NULL);
+}
+
+static void	close_fds(t_data *data)
+{
+	if (data->fd.first_pipe[0] != -1)
+		close(data->fd.first_pipe[0]);
+	if (data->fd.first_pipe[1] != -1)
+		close(data->fd.first_pipe[1]);
+	if (data->fd.infile != -1)
+		close(data->fd.infile);
+	if (data->fd.outfile != -1)
+		close(data->fd.outfile);
 }
