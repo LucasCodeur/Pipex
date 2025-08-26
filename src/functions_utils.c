@@ -10,9 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "pipex.h"
-
 #include "libft.h"
+#include "pipex.h"
 
 char	*str_two_join(char *str, char *str_2, char *str_3)
 {

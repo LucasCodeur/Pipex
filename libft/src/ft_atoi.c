@@ -10,9 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <stdbool.h>
-
 #include "libft.h"
+#include <stdbool.h>
 
 bool	ft_isspace(int c)
 {

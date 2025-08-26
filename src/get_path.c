@@ -6,7 +6,7 @@
 /*   By: lud-adam <lud-adam@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 15:32:44 by lud-adam          #+#    #+#             */
-/*   Updated: 2025/03/17 15:05:10 by lud-adam         ###   ########.fr       */
+/*   Updated: 2025/08/26 10:31:29 by lud-adam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,8 +38,8 @@ static char	*get_path(t_data *data, char *envp[])
 	{
 		if (ft_strncmp(envp[i], "PATH=", 5) == 0)
 		{
-			if (ft_strlen(envp[i]) > 5)
-				return (envp[i]);
+			if (ft_strlen(&envp[i][5]) > 1)
+				return (&envp[i][5]);
 			else
 				data->path_is_empty = true;
 		}

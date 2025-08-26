@@ -6,27 +6,27 @@
 /*   By: eveil <eveil@student.42lyon.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/10 13:31:36 by lud-adam          #+#    #+#             */
-/*   Updated: 2025/03/17 16:46:14 by lud-adam         ###   ########.fr       */
+/*   Updated: 2025/08/26 10:54:07 by lud-adam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "pipex.h"
+#include "ft_printf.h"
 #include "libft.h"
-
+#include "pipex.h"
 #include <stdbool.h>
 
 static void	check_if_absolute_path(t_data *data, char *pathname);
-static void	handle_absolute_path(t_data *data, char *pathname, char *command, char *envp[]);
+static void	handle_absolute_path(t_data *data, char *pathname, char *command,
+				char *envp[]);
 static char	*get_command_with_path(t_data *data, char *command);
 
 void	exec_command(t_data *data, char *envp[], char *command)
 {
 	data->pathname = command;
-	check_if_absolute_path(data, data->pathname);
+	check_if_absolute_path(data, command);
 	if (access(data->pathname, X_OK) == -1)
 	{
 		data->pathname = get_command_with_path(data, command);
-		printf("PATHNAME : %s\n", data->pathname);
 		if (!data->pathname)
 		{
 			free_and_close_all(data);
@@ -48,11 +48,11 @@ void	exec_command(t_data *data, char *envp[], char *command)
 static char	*get_command_with_path(t_data *data, char *command)
 {
 	data->i = 0;
+	data->commands = ft_split(command, ' ');
+	if (!data->commands)
+		return (NULL);
 	while (data->all_paths[data->i])
 	{
-		data->commands = ft_split(command, ' ');
-		if (!data->commands)
-			return (NULL);
 		data->path_bin = str_two_join(data->all_paths[data->i], "/",
 				data->commands[0]);
 		if (!data->path_bin)
@@ -67,8 +67,8 @@ static char	*get_command_with_path(t_data *data, char *command)
 		}
 		else
 			return (data->path_bin);
-		free_double_array(data->commands);
 	}
+	free_double_array(data->commands);
 	return (NULL);
 }
 
@@ -96,16 +96,16 @@ static void	handle_absolute_path(t_data *data, char *pathname, char *command,
 	char	*temp;
 
 	final_command = malloc(sizeof(char *) * 3);
-	temp = ft_strrchr(command, '/') + 1;
-	final_command[1] = ft_strdup(temp);
-	final_command[2] = NULL;
 	if (!final_command)
 	{
 		free_and_close_all(data);
 		exit(EXIT_FAILURE);
 	}
+	temp = ft_strrchr(command, '/') + 1;
+	final_command[1] = ft_strdup(temp);
+	final_command[2] = NULL;
 	free_double_array(data->commands);
-	if (execve(pathname, &final_command[1], envp) == -1)
+	if (execve(pathname, final_command, envp) == -1)
 	{
 		free_double_array(final_command);
 		free_and_close_all(data);

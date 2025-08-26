@@ -6,12 +6,14 @@
 /*   By: lud-adam <lud-adam@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/17 15:26:12 by lud-adam          #+#    #+#             */
-/*   Updated: 2025/03/17 16:58:04 by lud-adam         ###   ########.fr       */
+/*   Updated: 2025/08/26 10:17:03 by lud-adam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "pipex.h"
 #include "libft.h"
+#include "pipex.h"
+
+static void	fds_pipes(t_data *data, char *argv[], int argc, char *envp[]);
 
 static void	error_message(char *str)
 {
@@ -20,7 +22,8 @@ static void	error_message(char *str)
 	perror("");
 }
 
-static void	initialize_values(t_data *data)
+static void	initialize_values(t_data *data, char *argv[], int argc,
+		char *envp[])
 {
 	ft_bzero(data, sizeof(t_data));
 	data->path_is_empty = false;
@@ -28,6 +31,7 @@ static void	initialize_values(t_data *data)
 	data->fd.infile = -1;
 	data->fd.first_pipe[0] = -1;
 	data->fd.first_pipe[1] = -1;
+	fds_pipes(data, argv, argc, envp);
 }
 
 static void	fds_pipes(t_data *data, char *argv[], int argc, char *envp[])
@@ -82,8 +86,7 @@ int	main(int argc, char **argv, char **envp)
 
 	if (argc < 2 || argc > 5)
 		return (1);
-	initialize_values(&data);
-	fds_pipes(&data, argv, argc, envp);
+	initialize_values(&data, argv, argc, envp);
 	if (argc > 4)
 	{
 		first_child(&data, envp, argv);
